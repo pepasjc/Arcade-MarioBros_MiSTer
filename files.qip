@@ -24,3 +24,5 @@ set_global_assignment -name VERILOG_FILE rtl/hiscore.v
 set_global_assignment -name VERILOG_FILE rtl/pause.v
 set_global_assignment -name VHDL_FILE dpram.vhd
 set_global_assignment -name SYSTEMVERILOG_FILE "Arcade-MarioBros.sv"
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/mario_ra_tap.sv
+set_global_assignment -name VERILOG_FILE rtl/mario_ra_mirror.v

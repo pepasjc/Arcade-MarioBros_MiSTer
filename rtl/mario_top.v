@@ -37,8 +37,12 @@ module mario_top
    input    [7:0] hs_data_in,
    output   [7:0] hs_data_out,
    input          hs_write,
-   input          hs_access
+   input          hs_access,
 
+   // RetroAchievements tap: main Z80 memory write
+   output  [15:0] RA_CPU_A,
+   output   [7:0] RA_CPU_DO,
+   output         RA_CPU_WE
 );
 
 wire   W_RESETn      = I_RESETn;
@@ -201,8 +205,13 @@ mario_main maincpu
    .hs_data_in(hs_data_in),
    .hs_data_out(hs_data_out),
    .hs_write(hs_write),
-   .hs_access(hs_access)
+   .hs_access(hs_access),
+
+   .O_RA_WE(RA_CPU_WE)
 );
+
+assign RA_CPU_A  = W_MCPU_A;
+assign RA_CPU_DO = ZDI;
 
 //------------------------------------
 // Video

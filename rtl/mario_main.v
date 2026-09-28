@@ -51,7 +51,10 @@ module mario_main
    input    [7:0] hs_data_in,
    output   [7:0] hs_data_out,
    input          hs_write,
-   input          hs_access
+   input          hs_access,
+
+   // RetroAchievements tap: Z80 memory write (level, held for the bus cycle)
+   output         O_RA_WE
 );
 
 //-----------------------
@@ -95,6 +98,7 @@ T80pa z80core(
 assign O_MCPU_A    = W_MCPU_A;
 assign O_MCPU_RDn  = W_MCPU_RDn;
 assign O_MCPU_WRn  = W_MCPU_WRn;
+assign O_RA_WE     = ~W_MCPU_MREQn & ~W_MCPU_WRn & W_MCPU_RFSHn;
 
 // CPU Data Bus (Data In)
 wire   [7:0]WO_D = W_MROM_DO | W_MRAM7B_DO | W_MRAM7A_DO | W_SW_DO | I_VRAM_DB;
