@@ -532,9 +532,12 @@ hiscore #(
 //     0x0000 DrvZ80RAM  0x1000  Z80 6000-6FFF
 //     0x1000 DrvVidRAM  0x0400  Z80 7400-77FF
 //     0x1400 DrvSprRAM  0x0400  Z80 7000-73FF
-//     0x1800 sound RAM, latches (not mirrored, stay zero)
+//     0x1800 DrvSndRAM  0x0400  (not mirrored, stays zero)
+//     0x1C00 soundlatch, i8039_p[4], i8039_t[4], ... : only i8039_t[0]
+//            (0x1C05, the byte the Z80 writes to 7F01, sound CPU T0) is
+//            mirrored; the rest stays zero
 // The Z80 is 8-bit: shadow byte k is RA address k, so the ARM region table is
-// the identity {0, 0x1800, 0}. The hiscore system writes RAM 7B (6000-67FF)
+// the identity {0, 0x1C1E, 0}. The hiscore system writes RAM 7B (6000-67FF)
 // and 7A (6800-6FFF) through their second ports; those writes are mirrored too.
 //
 // The only other DDR client is the screen rotation framebuffer, which runs on
@@ -545,6 +548,8 @@ hiscore #(
 // framebuffer never loses a write. Held off during ROM download.
 
 function automatic [13:0] ra_cpu_map(input [15:0] a);  // {valid, offset}
+	if (a == 16'h7F01) ra_cpu_map = { 1'b1, 13'h1C05 };      // i8039_t[0] = data
+	else
 	casez (a[15:10])
 		6'b0110??: ra_cpu_map = { 1'b1, 1'b0, a[11:0] };           // 6000-6FFF
 		6'b011100: ra_cpu_map = { 1'b1, 3'b101, a[9:0] };          // 7000-73FF -> 1400
